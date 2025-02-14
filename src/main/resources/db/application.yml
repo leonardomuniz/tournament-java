@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: tournament
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  datasource:
+    url: jdbc:postgresql://localhost:5433/tournament
+    username: postgres
+    password: teste123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: false
+  flyway:
+    enabled: false
