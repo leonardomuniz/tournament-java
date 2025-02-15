@@ -1,9 +1,12 @@
-FROM maven:3.8.4-jdk-8 AS build
+FROM openjdk:21-jdk-slim
 
-COPY src /app/src
-COPY pom.xml /app  
+RUN mkdir /app
 
 WORKDIR /app
 
-RUN mvn clean install
+COPY target/*.jar /app/app.jar
 
+EXPOSE 8080
+EXPOSE 5005 
+
+CMD ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "/app/app.jar"]
