@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.online.tournament.model.Match;
 import com.online.tournament.model.Player;
+import com.online.tournament.model.Round;
 import com.online.tournament.repository.MatchRepository;
 import com.online.tournament.service.exceptions.match.MatchNotFoundException;
 import com.online.tournament.service.player.PlayerService;
@@ -32,7 +33,6 @@ public class MatchService {
     }
 
     public Match create(Match input) {
-        System.out.println("AAAAAAAAAAAAAAAAA" + input);
         if (input.getPlayerOne() == null || input.getPlayerOne().getId() == null) {
             throw new IllegalArgumentException("PlayerOne não pode ser nulo e deve ter um ID válido.");
         }
@@ -46,6 +46,11 @@ public class MatchService {
 
         input.setPlayerOne(playerOne);
         input.setPlayerTwo(playerTwo);
+
+        if (input.getRound() != null) {
+            Round round = input.getRound();
+            input.setRound(round);
+        }
 
         return repository.save(input);
     }

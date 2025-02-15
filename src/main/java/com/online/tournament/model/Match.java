@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -32,7 +31,6 @@ public class Match {
     private String result;
 
     @ManyToOne
-    @MapsId("id")
     @JoinColumn(name = "roundId", nullable = true)
     private Round round;
 

@@ -17,9 +17,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.online.tournament.DTO.MatchDTO;
 import com.online.tournament.model.Match;
 import com.online.tournament.service.exceptions.match.MatchNotFoundException;
+import com.online.tournament.service.exceptions.round.RoundNotFoundException;
 import com.online.tournament.service.match.MatchService;
+import com.online.tournament.service.player.PlayerService;
+import com.online.tournament.service.round.RoundService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +36,8 @@ public class MatchController {
 
     @Autowired
     private final MatchService service;
+    private final PlayerService playerService;
+    private final RoundService roundService;
 
     @GetMapping("/")
     public ResponseEntity<List<Match>> findAll() {
@@ -49,11 +55,22 @@ public class MatchController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Match> create(@RequestBody Match input) {
+    public ResponseEntity<Match> create(@RequestBody MatchDTO input) {
         try {
-            return ResponseEntity.ok().body(service.create(input));
+            Match match = new Match();
+            match.setPlayerOne(playerService.getById(input.getPlayerOneId()));
+            match.setPlayerTwo(playerService.getById(input.getPlayerTwoId()));
+            match.setResult(input.getResult());
+            if (input.getRoundId() != null) {
+                match.setRound(roundService.getById(input.getRoundId()));
+            }
+
+            return ResponseEntity.ok().body(service.create(match));
+        } catch (RoundNotFoundException e) {
+            logger.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception error) {
-            logger.error(error.getMessage());
+            logger.error(error.getMessage(), error);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
