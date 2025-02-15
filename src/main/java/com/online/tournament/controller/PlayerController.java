@@ -56,6 +56,7 @@ public class PlayerController {
 
     @PostMapping("/")
     public ResponseEntity<Player> createPlayer(@RequestBody Player input) {
+        System.out.println(input);
         try {
             return ResponseEntity.ok().body(service.create(input));
         } catch (PlayerAlreadyExistsException error) {
