@@ -75,13 +75,32 @@ public class MatchController {
         }
     }
 
-    @PutMapping("/")
-    public ResponseEntity<Match> update(@RequestBody Match input, @PathVariable UUID id) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Match> update(@RequestBody MatchDTO input, @PathVariable UUID id) {
         try {
-            return ResponseEntity.ok().body(service.edit(input, id));
+            Match match = service.getById(id);
+
+            match.setPlayerOne(playerService.getById(input.getPlayerOneId()));
+            match.setPlayerTwo(playerService.getById(input.getPlayerTwoId()));
+            match.setResult(input.getResult());
+
+            if (input.getRoundId() != null) {
+                match.setRound(roundService.getById(input.getRoundId()));
+            }
+
+            return ResponseEntity.ok().body(service.edit(match, id));
         } catch (MatchNotFoundException error) {
             logger.error(error.getMessage());
+
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (RoundNotFoundException e) {
+            logger.error(e.getMessage(), e);
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception error) {
+            logger.error(error.getMessage(), error);
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
