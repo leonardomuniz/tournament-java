@@ -17,13 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.online.tournament.DTO.MatchDTO;
-import com.online.tournament.model.Match;
+import com.online.tournament.DTO.match.InputMatchDTO;
+import com.online.tournament.DTO.match.OutputMatchDTO;
 import com.online.tournament.service.exceptions.match.MatchNotFoundException;
 import com.online.tournament.service.exceptions.round.RoundNotFoundException;
 import com.online.tournament.service.match.MatchService;
-import com.online.tournament.service.player.PlayerService;
-import com.online.tournament.service.round.RoundService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,20 +30,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MatchController {
 
-    private static final Logger logger = LoggerFactory.getLogger(PlayerController.class);
+    private static final Logger logger = LoggerFactory.getLogger(MatchController.class);
 
     @Autowired
     private final MatchService service;
-    private final PlayerService playerService;
-    private final RoundService roundService;
 
     @GetMapping("/")
-    public ResponseEntity<List<Match>> findAll() {
+    public ResponseEntity<List<OutputMatchDTO>> findAll() {
         return ResponseEntity.ok().body(service.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Match> find(@PathVariable UUID id) {
+    public ResponseEntity<OutputMatchDTO> find(@PathVariable UUID id) {
         try {
             return ResponseEntity.ok().body(service.getById(id));
         } catch (MatchNotFoundException error) {
@@ -55,17 +51,9 @@ public class MatchController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Match> create(@RequestBody MatchDTO input) {
+    public ResponseEntity<OutputMatchDTO> create(@RequestBody InputMatchDTO input) {
         try {
-            Match match = new Match();
-            match.setPlayerOne(playerService.getById(input.getPlayerOneId()));
-            match.setPlayerTwo(playerService.getById(input.getPlayerTwoId()));
-            match.setResult(input.getResult());
-            if (input.getRoundId() != null) {
-                match.setRound(roundService.getById(input.getRoundId()));
-            }
-
-            return ResponseEntity.ok().body(service.create(match));
+            return ResponseEntity.ok().body(service.create(input));
         } catch (RoundNotFoundException e) {
             logger.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -76,30 +64,17 @@ public class MatchController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Match> update(@RequestBody MatchDTO input, @PathVariable UUID id) {
+    public ResponseEntity<OutputMatchDTO> update(@RequestBody InputMatchDTO input, @PathVariable UUID id) {
         try {
-            Match match = service.getById(id);
-
-            match.setPlayerOne(playerService.getById(input.getPlayerOneId()));
-            match.setPlayerTwo(playerService.getById(input.getPlayerTwoId()));
-            match.setResult(input.getResult());
-
-            if (input.getRoundId() != null) {
-                match.setRound(roundService.getById(input.getRoundId()));
-            }
-
-            return ResponseEntity.ok().body(service.edit(match, id));
+            return ResponseEntity.ok().body(service.edit(input, id));
         } catch (MatchNotFoundException error) {
             logger.error(error.getMessage());
-
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (RoundNotFoundException e) {
             logger.error(e.getMessage(), e);
-
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception error) {
             logger.error(error.getMessage(), error);
-
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
