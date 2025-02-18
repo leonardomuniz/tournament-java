@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.online.tournament.DTO.player.InputPlayerDTO;
 import com.online.tournament.model.Player;
 import com.online.tournament.service.exceptions.player.PlayerAlreadyExistsException;
 import com.online.tournament.service.exceptions.player.PlayerNotFoundException;
@@ -55,10 +56,14 @@ public class PlayerController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Player> createPlayer(@RequestBody Player input) {
-        System.out.println(input);
+    public ResponseEntity<Player> createPlayer(@RequestBody InputPlayerDTO input) {
         try {
-            return ResponseEntity.ok().body(service.create(input));
+            Player player = new Player();
+            player.setName(input.getName());
+            player.setEmail(input.getEmail());
+            player.setRanking(input.getRanking());
+
+            return ResponseEntity.ok().body(service.create(player));
         } catch (PlayerAlreadyExistsException error) {
             logger.error(error.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -69,9 +74,14 @@ public class PlayerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Player> updatePlayer(@RequestBody Player input, @PathVariable UUID id) {
+    public ResponseEntity<Player> updatePlayer(@RequestBody InputPlayerDTO input, @PathVariable UUID id) {
         try {
-            return ResponseEntity.ok().body(service.edit(input, id));
+            Player player = service.getById(id);
+            player.setName(input.getName());
+            player.setEmail(input.getEmail());
+            player.setRanking(input.getRanking());
+
+            return ResponseEntity.ok().body(service.edit(player, id));
         } catch (PlayerNotFoundException error) {
             logger.error(error.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
