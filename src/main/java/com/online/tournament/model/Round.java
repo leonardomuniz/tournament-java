@@ -3,6 +3,8 @@ package com.online.tournament.model;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,5 +39,6 @@ public class Round {
     private Tournament tournament;
 
     @OneToMany(mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Match> matches;
 }
