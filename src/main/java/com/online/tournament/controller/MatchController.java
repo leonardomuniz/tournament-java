@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.online.tournament.DTO.match.InputMatchDTO;
-import com.online.tournament.DTO.match.OutputMatchDTO;
+import com.online.tournament.DTO.match.MatchDto;
+import com.online.tournament.model.Match;
 import com.online.tournament.service.exceptions.match.MatchNotFoundException;
 import com.online.tournament.service.exceptions.round.RoundNotFoundException;
 import com.online.tournament.service.match.MatchService;
@@ -36,12 +36,12 @@ public class MatchController {
     private final MatchService service;
 
     @GetMapping("/")
-    public ResponseEntity<List<OutputMatchDTO>> findAll() {
+    public ResponseEntity<List<MatchDto>> findAll() {
         return ResponseEntity.ok().body(service.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OutputMatchDTO> find(@PathVariable UUID id) {
+    public ResponseEntity<MatchDto> find(@PathVariable UUID id) {
         try {
             return ResponseEntity.ok().body(service.getById(id));
         } catch (MatchNotFoundException error) {
@@ -51,7 +51,7 @@ public class MatchController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<OutputMatchDTO> create(@RequestBody InputMatchDTO input) {
+    public ResponseEntity<MatchDto> create(@RequestBody Match input) {
         try {
             return ResponseEntity.ok().body(service.create(input));
         } catch (RoundNotFoundException e) {
@@ -64,7 +64,7 @@ public class MatchController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OutputMatchDTO> update(@RequestBody InputMatchDTO input, @PathVariable UUID id) {
+    public ResponseEntity<MatchDto> update(@RequestBody Match input, @PathVariable UUID id) {
         try {
             return ResponseEntity.ok().body(service.edit(input, id));
         } catch (MatchNotFoundException error) {
