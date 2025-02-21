@@ -1,14 +1,15 @@
 package com.online.tournament.service.tournament;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.online.tournament.DTO.tournament.TournamentDto;
+import com.online.tournament.mapper.TournamentMapper;
 import com.online.tournament.model.Tournament;
-import com.online.tournament.repository.TounamentRepository;
-import com.online.tournament.service.exceptions.match.MatchNotFoundException;
+import com.online.tournament.repository.TournamentRepository;
 import com.online.tournament.service.exceptions.tournament.TournamentNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -19,45 +20,43 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TournamentService {
 
-    private final TounamentRepository repository;
+    private final TournamentRepository repository;
 
-    public List<Tournament> findAll() {
-        return repository.findAll();
+    private final TournamentMapper mapper;
+
+    public List<TournamentDto> findAll() {
+        List<Tournament> tournaments = repository.findAll();
+        return tournaments.stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 
-    public Tournament getById(UUID id) {
-        return repository.findById(id).orElseThrow(() -> new TournamentNotFoundException());
+    public TournamentDto getById(UUID id) {
+        Tournament tournament = repository.findById(id).orElseThrow(TournamentNotFoundException::new);
+        return mapper.toDto(tournament);
     }
 
-    public Tournament create(Tournament input) {
-        return repository.save(input);
+    public TournamentDto create(Tournament input) {
+        Tournament tournament = repository.save(input);
+        return mapper.toDto(tournament);
     }
 
-    public Tournament edit(Tournament input, UUID id) {
-        Tournament tournament = repository.findById(id).orElseThrow(() -> new TournamentNotFoundException());
-
-        tournament.setName(input.getName() != null ? input.getName() : tournament.getName());
-        tournament.setRoundNumber(
-                input.getRoundNumber() != 0 ? input.getRoundNumber() : tournament.getRoundNumber());
-        tournament.setRounds(input.getRounds() != null ? input.getRounds() : tournament.getRounds());
-        tournament
-                .setPlayers(input.getPlayers() != null ? input.getPlayers() : tournament.getPlayers());
-        tournament
-                .setMatches(input.getMatches() != null ? input.getMatches() : tournament.getMatches());
-
-        return repository.save(tournament);
+    public TournamentDto edit(Tournament input, UUID id) throws TournamentNotFoundException {
+        Tournament tournamentExist = repository.findById(id).orElseThrow(TournamentNotFoundException::new);
+        updateEntity(tournamentExist, input);
+        tournamentExist = repository.save(tournamentExist);
+        return mapper.toDto(tournamentExist);
     }
 
-    public boolean delete(UUID id) {
-        Optional<Tournament> tournament = Optional.ofNullable(repository.findById(id).get());
-
-        if (tournament.isEmpty()) {
-            throw new MatchNotFoundException();
-        }
-
+    public boolean delete(UUID id) throws TournamentNotFoundException {
+        repository.findById(id).orElseThrow(TournamentNotFoundException::new);
         repository.deleteById(id);
-
         return true;
     }
 
+    private void updateEntity(Tournament tournament, Tournament input) {
+        tournament.setName(input.getName() != null ? input.getName() : tournament.getName());
+        tournament.setRoundNumber(input.getRoundNumber() != 0 ? input.getRoundNumber() : tournament.getRoundNumber());
+        tournament.setRounds(input.getRounds() != null ? input.getRounds() : tournament.getRounds());
+    }
 }

@@ -3,6 +3,8 @@ package com.online.tournament.model;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,6 +38,7 @@ public class Tournament {
     private int roundNumber;
 
     @OneToMany(mappedBy = "id")
+    @JsonManagedReference
     private List<Round> rounds;
 
     @ManyToMany

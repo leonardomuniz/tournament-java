@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.online.tournament.model.Tournament;
 
-public interface TounamentRepository extends JpaRepository<Tournament, UUID> {
+public interface TournamentRepository extends JpaRepository<Tournament, UUID> {
 }

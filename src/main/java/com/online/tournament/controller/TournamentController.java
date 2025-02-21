@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.online.tournament.DTO.tournament.TournamentDto;
 import com.online.tournament.model.Tournament;
 import com.online.tournament.service.exceptions.tournament.TournamentNotFoundException;
 import com.online.tournament.service.tournament.TournamentService;
@@ -28,18 +29,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TournamentController {
 
-    private static final Logger logger = LoggerFactory.getLogger(PlayerController.class);
+    private static final Logger logger = LoggerFactory.getLogger(TournamentController.class);
 
     @Autowired
     private final TournamentService service;
 
     @GetMapping("/")
-    public ResponseEntity<List<Tournament>> findAll() {
+    public ResponseEntity<List<TournamentDto>> findAll() {
         return ResponseEntity.ok().body(service.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Tournament> find(@PathVariable UUID id) {
+    public ResponseEntity<TournamentDto> find(@PathVariable UUID id) {
         try {
             return ResponseEntity.ok().body(service.getById(id));
         } catch (TournamentNotFoundException error) {
@@ -49,7 +50,7 @@ public class TournamentController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Tournament> create(@RequestBody Tournament input) {
+    public ResponseEntity<TournamentDto> create(@RequestBody Tournament input) {
         try {
             return ResponseEntity.ok().body(service.create(input));
         } catch (Exception error) {
@@ -58,8 +59,8 @@ public class TournamentController {
         }
     }
 
-    @PutMapping("/")
-    public ResponseEntity<Tournament> update(@RequestBody Tournament input, @PathVariable UUID id) {
+    @PutMapping("/{id}")
+    public ResponseEntity<TournamentDto> update(@RequestBody Tournament input, @PathVariable UUID id) {
         try {
             return ResponseEntity.ok().body(service.edit(input, id));
         } catch (TournamentNotFoundException error) {
@@ -77,5 +78,4 @@ public class TournamentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
 }
