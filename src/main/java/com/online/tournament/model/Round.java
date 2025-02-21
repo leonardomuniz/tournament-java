@@ -3,6 +3,7 @@ package com.online.tournament.model;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -36,6 +37,7 @@ public class Round {
 
     @ManyToOne
     @JoinColumn(name = "tournamentId", nullable = false)
+    @JsonBackReference
     private Tournament tournament;
 
     @OneToMany(mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
