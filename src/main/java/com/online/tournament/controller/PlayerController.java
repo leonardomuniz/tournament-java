@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.online.tournament.DTO.player.InputPlayerDTO;
+import com.online.tournament.DTO.player.PlayerDto;
 import com.online.tournament.model.Player;
 import com.online.tournament.service.exceptions.player.PlayerAlreadyExistsException;
 import com.online.tournament.service.exceptions.player.PlayerNotFoundException;
@@ -36,12 +36,12 @@ public class PlayerController {
     private final PlayerService service;
 
     @GetMapping("/")
-    public ResponseEntity<List<Player>> getAllPlayers() {
+    public ResponseEntity<List<PlayerDto>> getAllPlayers() {
         return ResponseEntity.ok().body(service.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Player> getPlayer(@PathVariable UUID id) {
+    public ResponseEntity<PlayerDto> get(@PathVariable UUID id) {
         try {
             return ResponseEntity.ok().body(service.getById(id));
         } catch (PlayerNotFoundException error) {
@@ -51,22 +51,17 @@ public class PlayerController {
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<Player> getPlayerByEmail(@PathVariable String email) {
+    public ResponseEntity<PlayerDto> getByEmail(@PathVariable String email) {
         return ResponseEntity.ok().body(service.getByEmail(email));
     }
 
     @PostMapping("/")
-    public ResponseEntity<Player> createPlayer(@RequestBody InputPlayerDTO input) {
+    public ResponseEntity<PlayerDto> create(@RequestBody Player input) {
         try {
-            Player player = new Player();
-            player.setName(input.getName());
-            player.setEmail(input.getEmail());
-            player.setRanking(input.getRanking());
-
-            return ResponseEntity.ok().body(service.create(player));
+            return ResponseEntity.ok().body(service.create(input));
         } catch (PlayerAlreadyExistsException error) {
             logger.error(error.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         } catch (Exception error) {
             logger.error(error.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -74,14 +69,9 @@ public class PlayerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Player> updatePlayer(@RequestBody InputPlayerDTO input, @PathVariable UUID id) {
+    public ResponseEntity<PlayerDto> update(@RequestBody Player input, @PathVariable UUID id) {
         try {
-            Player player = service.getById(id);
-            player.setName(input.getName());
-            player.setEmail(input.getEmail());
-            player.setRanking(input.getRanking());
-
-            return ResponseEntity.ok().body(service.edit(player, id));
+            return ResponseEntity.ok().body(service.edit(input, id));
         } catch (PlayerNotFoundException error) {
             logger.error(error.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -92,7 +82,7 @@ public class PlayerController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deletePlayer(@PathVariable UUID id) {
+    public ResponseEntity<Boolean> delete(@PathVariable UUID id) {
         try {
             return ResponseEntity.ok().body(service.delete(id));
         } catch (Exception error) {

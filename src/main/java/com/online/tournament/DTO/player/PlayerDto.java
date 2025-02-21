@@ -1,9 +1,11 @@
 package com.online.tournament.DTO.player;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class InputPlayerDTO {
+@Builder
+public class PlayerDto {
     private String name;
 
     private String email;
