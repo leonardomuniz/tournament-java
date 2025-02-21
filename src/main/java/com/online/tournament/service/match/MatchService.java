@@ -5,8 +5,10 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.online.tournament.DTO.match.InputMatchDTO;
-import com.online.tournament.DTO.match.OutputMatchDTO;
+import com.online.tournament.DTO.match.MatchDto;
+import com.online.tournament.mapper.MatchMapper;
+import com.online.tournament.mapper.PlayerMapper;
+import com.online.tournament.mapper.RoundMapper;
 import com.online.tournament.model.Match;
 import com.online.tournament.repository.MatchRepository;
 import com.online.tournament.service.exceptions.match.MatchNotFoundException;
@@ -23,69 +25,60 @@ import lombok.extern.slf4j.Slf4j;
 public class MatchService {
 
     private final MatchRepository repository;
+
     private final PlayerService playerService;
+
     private final RoundService roundService;
 
-    public List<OutputMatchDTO> findAll() {
+    private final MatchMapper matchMapper;
+
+    private final RoundMapper roundMapper;
+
+    private final PlayerMapper playerMapper;
+
+    public List<MatchDto> findAll() {
         List<Match> matches = repository.findAll();
-        return matches.stream().map(this::convertToDTO).toList();
+        return matches.stream().map(matchMapper::toDto).toList();
     }
 
-    public OutputMatchDTO getById(UUID id) {
+    public MatchDto getById(UUID id) throws MatchNotFoundException {
         Match match = repository.findById(id).orElseThrow(() -> new MatchNotFoundException());
 
-        return convertToDTO(match);
+        return matchMapper.toDto(match);
     }
 
-    public OutputMatchDTO create(InputMatchDTO input) throws RoundNotFoundException {
-        Match match = convertToEntity(input);
+    public MatchDto create(Match input) throws RoundNotFoundException {
+        Match match = new Match();
+        match.setRound(roundMapper.toEntity(roundService.getById(input.getRound().getId())));
+        match.setPlayerOne(playerMapper.toEntity(playerService.getById(input.getPlayerOne().getId())));
+        match.setPlayerTwo(playerMapper.toEntity(playerService.getById(input.getPlayerTwo().getId())));
+        match.setWinner(playerMapper.toEntity(playerService.getById(input.getWinner().getId())));
+        match.setResult(input.getResult());
+
         match = repository.save(match);
 
-        return convertToDTO(match);
+        return matchMapper.toDto(match);
     }
 
-    public OutputMatchDTO edit(InputMatchDTO input, UUID id) throws MatchNotFoundException, RoundNotFoundException {
-        Match matchExist = repository.findById(id).orElseThrow(() -> new MatchNotFoundException());
-        updateEntity(matchExist, input);
-        matchExist = repository.save(matchExist);
+    public MatchDto edit(Match input, UUID id) throws MatchNotFoundException, RoundNotFoundException {
+        Match match = repository.findById(id).orElseThrow(() -> new MatchNotFoundException());
+        updateEntity(match, input);
+        match = repository.save(match);
 
-        return convertToDTO(matchExist);
+        return matchMapper.toDto(match);
     }
 
-    public boolean delete(UUID id) {
-        repository.findById(id).orElseThrow(() -> new MatchNotFoundException());
-        repository.deleteById(id);
+    public boolean delete(UUID id) throws MatchNotFoundException {
+        repository.findById(id).ifPresent(repository::delete);
         return true;
     }
 
-    private OutputMatchDTO convertToDTO(Match match) {
-        return OutputMatchDTO.builder()
-                .id(match.getId())
-                .playerOne(match.getPlayerOne())
-                .playerTwo(match.getPlayerTwo())
-                .round(match.getRound().getId())
-                .result(match.getResult())
-                .winner(match.getWinner())
-                .build();
-    }
-
-    private Match convertToEntity(InputMatchDTO input) {
-        Match match = new Match();
-
-        match.setPlayerOne(playerService.getById(input.getPlayerOneId()));
-        match.setPlayerTwo(playerService.getById(input.getPlayerTwoId()));
-        match.setRound(roundService.getById(input.getRoundId()));
+    private void updateEntity(Match match, Match input) {
+        match.setRound(roundMapper.toEntity(roundService.getById(input.getRound().getId())));
+        match.setPlayerOne(playerMapper.toEntity(playerService.getById(input.getPlayerOne().getId())));
+        match.setPlayerTwo(playerMapper.toEntity(playerService.getById(input.getPlayerTwo().getId())));
+        match.setWinner(playerMapper.toEntity(playerService.getById(input.getWinner().getId())));
         match.setResult(input.getResult());
-        match.setWinner(playerService.getById(input.getWinnerId()));
-        return match;
-    }
-
-    private void updateEntity(Match match, InputMatchDTO input) {
-        match.setPlayerOne(playerService.getById(input.getPlayerOneId()));
-        match.setPlayerTwo(playerService.getById(input.getPlayerTwoId()));
-        match.setRound(roundService.getById(input.getRoundId()));
-        match.setResult(input.getResult());
-        match.setWinner(playerService.getById(input.getWinnerId()));
     }
 
 }
