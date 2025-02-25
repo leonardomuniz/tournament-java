@@ -2,12 +2,9 @@ package com.online.tournament.service.tournament;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.online.tournament.DTO.tournament.TournamentDto;
-import com.online.tournament.mapper.TournamentMapper;
 import com.online.tournament.model.Tournament;
 import com.online.tournament.repository.TournamentRepository;
 import com.online.tournament.service.exceptions.tournament.TournamentNotFoundException;
@@ -22,30 +19,22 @@ public class TournamentService {
 
     private final TournamentRepository repository;
 
-    private final TournamentMapper mapper;
-
-    public List<TournamentDto> findAll() {
-        List<Tournament> tournaments = repository.findAll();
-        return tournaments.stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
+    public List<Tournament> findAll() {
+        return repository.findAll();
     }
 
-    public TournamentDto getById(UUID id) {
-        Tournament tournament = repository.findById(id).orElseThrow(TournamentNotFoundException::new);
-        return mapper.toDto(tournament);
+    public Tournament getById(UUID id) {
+        return repository.findById(id).orElseThrow(TournamentNotFoundException::new);
     }
 
-    public TournamentDto create(Tournament input) {
-        Tournament tournament = repository.save(input);
-        return mapper.toDto(tournament);
+    public Tournament create(Tournament input) {
+        return repository.save(input);
     }
 
-    public TournamentDto edit(Tournament input, UUID id) throws TournamentNotFoundException {
+    public Tournament edit(Tournament input, UUID id) throws TournamentNotFoundException {
         Tournament tournamentExist = repository.findById(id).orElseThrow(TournamentNotFoundException::new);
         updateEntity(tournamentExist, input);
-        tournamentExist = repository.save(tournamentExist);
-        return mapper.toDto(tournamentExist);
+        return repository.save(tournamentExist);
     }
 
     public boolean delete(UUID id) throws TournamentNotFoundException {

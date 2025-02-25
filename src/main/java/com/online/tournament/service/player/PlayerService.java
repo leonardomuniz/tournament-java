@@ -5,8 +5,6 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.online.tournament.DTO.player.PlayerDto;
-import com.online.tournament.mapper.PlayerMapper;
 import com.online.tournament.model.Player;
 import com.online.tournament.repository.PlayerRepository;
 import com.online.tournament.service.exceptions.player.PlayerAlreadyExistsException;
@@ -22,43 +20,29 @@ public class PlayerService {
 
     private final PlayerRepository repository;
 
-    private final PlayerMapper mapper;
-
-    public List<PlayerDto> findAll() {
-        List<Player> players = repository.findAll();
-        return players.stream().map(mapper::toDto).toList();
+    public List<Player> findAll() {
+        return repository.findAll();
     }
 
-    public PlayerDto getById(UUID id) throws PlayerNotFoundException {
-        Player player = repository.findById(id).orElse(null);
-
-        return mapper.toDto(player);
+    public Player getById(UUID id) throws PlayerNotFoundException {
+        return repository.findById(id).orElseThrow(() -> new PlayerNotFoundException("Player not found"));
     }
 
-    public PlayerDto getByEmail(String email) throws PlayerNotFoundException {
-        try {
-            return mapper.toDto(repository.findByEmail(email).get());
-        } catch (PlayerNotFoundException error) {
-            System.err.println(error.getMessage());
-            return null;
+    public Player getByEmail(String email) throws PlayerNotFoundException {
+        return repository.findByEmail(email).orElseThrow(() -> new PlayerNotFoundException("Player not found"));
+    }
+
+    public Player create(Player input) throws PlayerAlreadyExistsException {
+        if (repository.findByEmail(input.getEmail()).isPresent()) {
+            throw new PlayerAlreadyExistsException("Player with email: " + input.getEmail() + " already exists");
         }
+        return repository.save(input);
     }
 
-    public PlayerDto create(Player input) throws PlayerAlreadyExistsException {
-        Player player = repository.findByEmail(input.getEmail())
-                .orElseThrow(() -> new PlayerAlreadyExistsException(
-                        "Player with email: " + input.getEmail() + "already exists"));
-
-        return mapper.toDto(repository.save(player));
-    }
-
-    public PlayerDto edit(Player input, UUID id) throws PlayerNotFoundException {
-        Player player = repository.findById(id).orElseThrow(() -> new PlayerNotFoundException());
-
+    public Player edit(Player input, UUID id) throws PlayerNotFoundException {
+        Player player = repository.findById(id).orElseThrow(() -> new PlayerNotFoundException("Player not found"));
         updateEntity(player, input);
-        player = repository.save(player);
-
-        return mapper.toDto(player);
+        return repository.save(player);
     }
 
     public boolean delete(UUID id) {
