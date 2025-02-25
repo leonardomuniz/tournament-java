@@ -1,8 +1,8 @@
 package com.online.tournament.DTO.tournament;
 
 import java.util.List;
+import java.util.UUID;
 
-import com.fasterxml.jackson.databind.deser.DataFormatReaders.Match;
 import com.online.tournament.model.Player;
 import com.online.tournament.model.Round;
 
@@ -16,5 +16,5 @@ public class TournamentDto {
     public int roundNumber;
     public List<Round> rounds;
     public List<Player> players;
-    public List<Match> matches;
+    public List<UUID> matches;
 }

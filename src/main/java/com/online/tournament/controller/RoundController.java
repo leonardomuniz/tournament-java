@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.online.tournament.DTO.round.RoundDto;
 import com.online.tournament.model.Round;
 import com.online.tournament.service.exceptions.round.RoundNotFoundException;
 import com.online.tournament.service.exceptions.tournament.TournamentNotFoundException;
@@ -35,12 +36,12 @@ public class RoundController {
     private final RoundService service;
 
     @GetMapping("/")
-    public ResponseEntity<List<Round>> findAll() {
+    public ResponseEntity<List<RoundDto>> findAll() {
         return ResponseEntity.ok().body(service.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Round> find(@PathVariable UUID id) {
+    public ResponseEntity<RoundDto> find(@PathVariable UUID id) {
         try {
             return ResponseEntity.ok().body(service.getById(id));
         } catch (RoundNotFoundException error) {
@@ -50,7 +51,7 @@ public class RoundController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Round> create(@RequestBody Round input) {
+    public ResponseEntity<RoundDto> create(@RequestBody Round input) {
         try {
             return ResponseEntity.ok().body(service.create(input));
         } catch (Exception error) {
@@ -60,7 +61,7 @@ public class RoundController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Round> update(@RequestBody Round input, @PathVariable UUID id) {
+    public ResponseEntity<RoundDto> update(@RequestBody Round input, @PathVariable UUID id) {
         try {
             return ResponseEntity.ok().body(service.edit(input, id));
         } catch (TournamentNotFoundException error) {

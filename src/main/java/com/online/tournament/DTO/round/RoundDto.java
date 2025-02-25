@@ -3,8 +3,6 @@ package com.online.tournament.DTO.round;
 import java.util.List;
 import java.util.UUID;
 
-import com.online.tournament.DTO.match.MatchDto;
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,5 +13,5 @@ public class RoundDto {
 
     private UUID tournamentId;
 
-    private List<MatchDto> matches;
+    private List<UUID> matches;
 }

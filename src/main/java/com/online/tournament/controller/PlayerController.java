@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.online.tournament.DTO.player.PlayerDto;
 import com.online.tournament.model.Player;
 import com.online.tournament.service.exceptions.player.PlayerAlreadyExistsException;
 import com.online.tournament.service.exceptions.player.PlayerNotFoundException;
@@ -35,12 +36,12 @@ public class PlayerController {
     private final PlayerService service;
 
     @GetMapping("/")
-    public ResponseEntity<List<Player>> getAllPlayers() {
+    public ResponseEntity<List<PlayerDto>> getAllPlayers() {
         return ResponseEntity.ok().body(service.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Player> get(@PathVariable UUID id) {
+    public ResponseEntity<PlayerDto> get(@PathVariable UUID id) {
         try {
             return ResponseEntity.ok().body(service.getById(id));
         } catch (PlayerNotFoundException error) {
@@ -50,12 +51,12 @@ public class PlayerController {
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<Player> getByEmail(@PathVariable String email) {
+    public ResponseEntity<PlayerDto> getByEmail(@PathVariable String email) {
         return ResponseEntity.ok().body(service.getByEmail(email));
     }
 
     @PostMapping("/")
-    public ResponseEntity<Player> create(@RequestBody Player input) {
+    public ResponseEntity<PlayerDto> create(@RequestBody Player input) {
         try {
             return ResponseEntity.ok().body(service.create(input));
         } catch (PlayerAlreadyExistsException error) {
@@ -68,7 +69,7 @@ public class PlayerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Player> update(@RequestBody Player input, @PathVariable UUID id) {
+    public ResponseEntity<PlayerDto> update(@RequestBody Player input, @PathVariable UUID id) {
         try {
             return ResponseEntity.ok().body(service.edit(input, id));
         } catch (PlayerNotFoundException error) {
