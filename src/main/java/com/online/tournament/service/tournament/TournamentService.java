@@ -36,6 +36,8 @@ public class TournamentService {
         Tournament tournament = new Tournament();
         tournament.setName(input.getName());
         tournament.setRoundNumber(0);
+        tournament.setStarted(false);
+        tournament.setOpen(false);
         tournament.setPlayers(input.getPlayers());
         tournament.setMatches(input.getMatches());
 
@@ -46,7 +48,6 @@ public class TournamentService {
         tournament.getRounds().add(round);
 
         Tournament savedTournament = repository.save(tournament);
-        System.out.println("ID do Torneio Salvo: " + savedTournament.getId());
 
         return toDto(savedTournament);
     }
@@ -75,6 +76,8 @@ public class TournamentService {
                 .id(tournament.getId())
                 .players(tournament.getPlayers())
                 .matches(tournament.getMatches())
+                .started(tournament.isStarted())
+                .open(tournament.isOpen())
                 .name(tournament.getName())
                 .roundNumber(tournament.getRoundNumber())
                 .rounds(tournament.getRounds())

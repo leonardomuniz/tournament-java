@@ -14,9 +14,19 @@ import lombok.Data;
 @Builder
 public class TournamentDto {
     public UUID id;
+
     public String name;
+
+    public boolean started;
+
+    public boolean open;
+
     public int roundNumber;
+
     public List<Round> rounds;
+
     public List<Player> players;
+
     public List<Match> matches;
+
 }

@@ -39,6 +39,13 @@ public class Tournament {
     @Column(name = "roundNumber")
     private int roundNumber;
 
+    @Column(name = "started")
+    private boolean started;
+
+    @Column(name = "open")
+    @Getter
+    private boolean open;
+
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Round> rounds = new ArrayList<>();
