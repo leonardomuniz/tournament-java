@@ -12,6 +12,8 @@ public class MatchDto {
 
     private String result;
 
+    private boolean finished;
+
     private UUID roundId;
 
     private UUID playerOneId;

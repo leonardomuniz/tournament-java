@@ -37,6 +37,9 @@ public class Match {
     @JsonBackReference
     private Round round;
 
+    @Column(name = "finished")
+    private boolean finished;
+
     @OneToOne
     @JoinColumn(name = "playerOneId", nullable = false)
     private Player playerOne;
