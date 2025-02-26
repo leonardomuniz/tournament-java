@@ -36,7 +36,7 @@ public class Round {
     private int round;
 
     @Column(name = "finished")
-    private boolean finished;
+    private Boolean finished;
 
     @ManyToOne
     @JoinColumn(name = "tournamentId", nullable = false)

@@ -61,7 +61,7 @@ public class RoundService {
     private RoundDto toDto(Round round) {
         return RoundDto.builder()
                 .id(round.getId())
-                .finished(round.isFinished())
+                .finished(round.getFinished())
                 .round(round.getRound())
                 .tournamentId(round.getTournament().getId())
                 .matches(round.getMatches().stream().map(Match::getId).collect(Collectors.toList()))

@@ -11,7 +11,7 @@ import lombok.Data;
 public class RoundDto {
     private UUID id;
 
-    private boolean finished;
+    private Boolean finished;
 
     private int round;
 

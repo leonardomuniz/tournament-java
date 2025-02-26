@@ -80,7 +80,7 @@ public class MatchService {
                 .playerTwoId(match.getPlayerTwo().getId())
                 .winnerId(match.getWinner().getId())
                 .result(match.getResult())
-                .finished(match.isFinished())
+                .finished(match.getFinished())
                 .build();
     }
 
