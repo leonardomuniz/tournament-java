@@ -12,7 +12,7 @@ public class MatchDto {
 
     private String result;
 
-    private boolean finished;
+    private Boolean finished;
 
     private UUID roundId;
 

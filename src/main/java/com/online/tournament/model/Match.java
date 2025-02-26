@@ -38,7 +38,7 @@ public class Match {
     private Round round;
 
     @Column(name = "finished")
-    private boolean finished;
+    private Boolean finished;
 
     @OneToOne
     @JoinColumn(name = "playerOneId", nullable = false)
