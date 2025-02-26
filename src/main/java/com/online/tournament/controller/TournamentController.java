@@ -69,6 +69,16 @@ public class TournamentController {
         }
     }
 
+    @PutMapping("/{tournamentId}/player/{playerEmail}")
+    public ResponseEntity<TournamentDto> addPlayer(@PathVariable UUID tournamentId, @PathVariable String playerEmail) {
+        try {
+            return ResponseEntity.ok().body(service.addPlayersToTournament(playerEmail, tournamentId));
+        } catch (TournamentNotFoundException error) {
+            logger.error(error.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable UUID id) {
         try {

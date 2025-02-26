@@ -40,22 +40,52 @@ public class Tournament {
     private int roundNumber;
 
     @Column(name = "started")
-    private boolean started;
+    private Boolean started;
 
     @Column(name = "open")
-    @Getter
-    private boolean open;
+    private Boolean open;
 
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Round> rounds = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(name = "tournamentPlayer", joinColumns = @JoinColumn(name = "tournamentId"), inverseJoinColumns = @JoinColumn(name = "playerId"))
+    @JoinTable(name = "tournament_player", joinColumns = @JoinColumn(name = "tournament_id"), inverseJoinColumns = @JoinColumn(name = "player_id"))
+    @JsonManagedReference
     private List<Player> players;
 
     @ManyToMany
     @JoinTable(name = "tournamentMatch", joinColumns = @JoinColumn(name = "tournamentId"), inverseJoinColumns = @JoinColumn(name = "matchId"))
     private List<Match> matches;
 
+    public void updateFrom(Tournament input) {
+        if (input.getName() != null) {
+            this.name = input.getName();
+        }
+
+        if (input.getRoundNumber() != 0) {
+            this.roundNumber = input.getRoundNumber();
+        }
+
+        if (input.getRounds() != null && !input.getRounds().isEmpty()) {
+            this.rounds = input.getRounds();
+        }
+
+        if (input.getMatches() != null && !input.getMatches().isEmpty()) {
+            this.matches = input.getMatches();
+        }
+
+        if (input.getPlayers() != null && !input.getPlayers().isEmpty()) {
+            this.players = input.getPlayers();
+        }
+
+        if (input.getStarted() != null) {
+            this.started = input.getStarted();
+        }
+
+        if (input.getOpen() != null) {
+            this.open = input.getOpen();
+        }
+
+    }
 }

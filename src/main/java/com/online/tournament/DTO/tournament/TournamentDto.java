@@ -17,9 +17,9 @@ public class TournamentDto {
 
     public String name;
 
-    public boolean started;
+    public Boolean started;
 
-    public boolean open;
+    public Boolean open;
 
     public int roundNumber;
 

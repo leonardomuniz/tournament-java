@@ -7,11 +7,15 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.online.tournament.DTO.tournament.TournamentDto;
+import com.online.tournament.model.Player;
 import com.online.tournament.model.Round;
 import com.online.tournament.model.Tournament;
+import com.online.tournament.repository.PlayerRepository;
 import com.online.tournament.repository.TournamentRepository;
+import com.online.tournament.service.exceptions.player.PlayerNotFoundException;
 import com.online.tournament.service.exceptions.tournament.TournamentNotFoundException;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 public class TournamentService {
 
     private final TournamentRepository repository;
+
+    private final PlayerRepository playerRepository;
 
     public List<TournamentDto> findAll() {
         List<Tournament> tournaments = repository.findAll();
@@ -52,11 +58,30 @@ public class TournamentService {
         return toDto(savedTournament);
     }
 
+    @Transactional
     public TournamentDto edit(Tournament input, UUID id) throws TournamentNotFoundException {
-        Tournament tournamentExist = repository.findById(id).orElseThrow(TournamentNotFoundException::new);
-        updateEntity(tournamentExist, input);
+        Tournament tournamentExist = repository.findById(id)
+                .orElseThrow(TournamentNotFoundException::new);
+
+        tournamentExist.updateFrom(input);
         tournamentExist = repository.save(tournamentExist);
         return toDto(tournamentExist);
+    }
+
+    @Transactional
+    public TournamentDto addPlayersToTournament(String playerEmail, UUID tournamentId)
+            throws TournamentNotFoundException, PlayerNotFoundException {
+        Tournament tournamentExist = repository.findById(tournamentId)
+                .orElseThrow(TournamentNotFoundException::new);
+
+        Player playerExist = playerRepository.findByEmail(playerEmail)
+                .orElseThrow(() -> new PlayerNotFoundException("Player not found"));
+
+        tournamentExist.getPlayers().add(playerExist);
+
+        Tournament savedTournament = repository.save(tournamentExist);
+
+        return toDto(savedTournament);
     }
 
     public boolean delete(UUID id) throws TournamentNotFoundException {
@@ -65,22 +90,16 @@ public class TournamentService {
         return true;
     }
 
-    private void updateEntity(Tournament tournament, Tournament input) {
-        tournament.setName(input.getName() != null ? input.getName() : tournament.getName());
-        tournament.setRoundNumber(input.getRoundNumber() != 0 ? input.getRoundNumber() : tournament.getRoundNumber());
-        tournament.setRounds(input.getRounds() != null ? input.getRounds() : tournament.getRounds());
-    }
-
     private TournamentDto toDto(Tournament tournament) {
         return TournamentDto.builder()
                 .id(tournament.getId())
-                .players(tournament.getPlayers())
-                .matches(tournament.getMatches())
-                .started(tournament.isStarted())
-                .open(tournament.isOpen())
                 .name(tournament.getName())
                 .roundNumber(tournament.getRoundNumber())
                 .rounds(tournament.getRounds())
+                .players(tournament.getPlayers())
+                .matches(tournament.getMatches())
+                .started(tournament.getStarted())
+                .open(tournament.getOpen())
                 .build();
     }
 }
