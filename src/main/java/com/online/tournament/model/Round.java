@@ -35,6 +35,9 @@ public class Round {
     @Column(name = "round", columnDefinition = "int default 0")
     private int round;
 
+    @Column(name = "finished")
+    private boolean finished;
+
     @ManyToOne
     @JoinColumn(name = "tournamentId", nullable = false)
     @JsonBackReference

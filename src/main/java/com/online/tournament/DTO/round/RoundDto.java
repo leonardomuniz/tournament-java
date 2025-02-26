@@ -9,6 +9,10 @@ import lombok.Data;
 @Data
 @Builder
 public class RoundDto {
+    private UUID id;
+
+    private boolean finished;
+
     private int round;
 
     private UUID tournamentId;
