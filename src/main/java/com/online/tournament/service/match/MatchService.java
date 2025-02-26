@@ -114,11 +114,9 @@ public class MatchService {
         tournament.setRoundNumber(input.getRoundNumber());
         tournament.setRounds(input.getRounds());
         tournament.setPlayers(input.getPlayers());
-        tournament.setMatches(input.getMatches().stream()
-                .map(matchId -> repository.findById(matchId)
-                        .orElseThrow(() -> new MatchNotFoundException("Match not found")))
-                .collect(Collectors.toList()));
+        tournament.setMatches(input.getMatches());
 
         return tournament;
     }
+
 }

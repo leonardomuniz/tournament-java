@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.online.tournament.DTO.tournament.TournamentDto;
+import com.online.tournament.model.Round;
 import com.online.tournament.model.Tournament;
 import com.online.tournament.repository.TournamentRepository;
 import com.online.tournament.service.exceptions.tournament.TournamentNotFoundException;
@@ -32,8 +33,22 @@ public class TournamentService {
     }
 
     public TournamentDto create(Tournament input) {
-        Tournament tournament = repository.save(input);
-        return toDto(tournament);
+        Tournament tournament = new Tournament();
+        tournament.setName(input.getName());
+        tournament.setRoundNumber(0);
+        tournament.setPlayers(input.getPlayers());
+        tournament.setMatches(input.getMatches());
+
+        Round round = new Round();
+        round.setRound(0);
+        round.setTournament(tournament);
+
+        tournament.getRounds().add(round);
+
+        Tournament savedTournament = repository.save(tournament);
+        System.out.println("ID do Torneio Salvo: " + savedTournament.getId());
+
+        return toDto(savedTournament);
     }
 
     public TournamentDto edit(Tournament input, UUID id) throws TournamentNotFoundException {
@@ -57,6 +72,9 @@ public class TournamentService {
 
     private TournamentDto toDto(Tournament tournament) {
         return TournamentDto.builder()
+                .id(tournament.getId())
+                .players(tournament.getPlayers())
+                .matches(tournament.getMatches())
                 .name(tournament.getName())
                 .roundNumber(tournament.getRoundNumber())
                 .rounds(tournament.getRounds())
