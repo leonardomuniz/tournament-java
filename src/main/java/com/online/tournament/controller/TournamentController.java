@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.online.tournament.DTO.tournament.TournamentDto;
+import com.online.tournament.DTO.TournamentDto;
 import com.online.tournament.model.Tournament;
+import com.online.tournament.service.TournamentService;
 import com.online.tournament.service.exceptions.tournament.TournamentNotFoundException;
-import com.online.tournament.service.tournament.TournamentService;
 
 import lombok.RequiredArgsConstructor;
 

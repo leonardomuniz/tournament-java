@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.online.tournament.DTO.match.MatchDto;
+import com.online.tournament.DTO.MatchDto;
 import com.online.tournament.model.Match;
+import com.online.tournament.service.MatchService;
 import com.online.tournament.service.exceptions.match.MatchNotFoundException;
 import com.online.tournament.service.exceptions.round.RoundNotFoundException;
-import com.online.tournament.service.match.MatchService;
 
 import lombok.RequiredArgsConstructor;
 

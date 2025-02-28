@@ -1,4 +1,4 @@
-package com.online.tournament.DTO.player;
+package com.online.tournament.DTO;
 
 import java.util.UUID;
 

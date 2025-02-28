@@ -1,4 +1,4 @@
-package com.online.tournament.service.player;
+package com.online.tournament.service;
 
 import java.util.List;
 import java.util.UUID;
@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.online.tournament.DTO.player.PlayerDto;
+import com.online.tournament.DTO.PlayerDto;
 import com.online.tournament.model.Player;
 import com.online.tournament.repository.PlayerRepository;
 import com.online.tournament.service.exceptions.player.PlayerAlreadyExistsException;
@@ -39,11 +39,18 @@ public class PlayerService {
     }
 
     public PlayerDto create(Player input) throws PlayerAlreadyExistsException {
-        if (repository.findByEmail(input.getEmail()).isPresent()) {
-            throw new PlayerAlreadyExistsException("Player with email: " + input.getEmail() + " already exists");
-        }
-        Player player = repository.save(input);
-        return toDto(player);
+        repository.findByEmail(input.getEmail()).orElseThrow(
+                () -> new PlayerAlreadyExistsException("Player with email: " + input.getEmail() + " already exists"));
+
+        Player player = new Player();
+
+        player.setEmail(input.getEmail());
+        player.setName(input.getName());
+        player.setRanking(input.getRanking() == 0 ? 0 : input.getRanking());
+
+        Player savedPlayer = repository.save(player);
+
+        return toDto(savedPlayer);
     }
 
     public PlayerDto edit(Player input, UUID id) throws PlayerNotFoundException {

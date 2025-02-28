@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.online.tournament.DTO.player.PlayerDto;
+import com.online.tournament.DTO.PlayerDto;
 import com.online.tournament.model.Player;
+import com.online.tournament.service.PlayerService;
 import com.online.tournament.service.exceptions.player.PlayerAlreadyExistsException;
 import com.online.tournament.service.exceptions.player.PlayerNotFoundException;
-import com.online.tournament.service.player.PlayerService;
 
 import lombok.RequiredArgsConstructor;
 

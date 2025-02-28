@@ -1,4 +1,4 @@
-package com.online.tournament.service.match;
+package com.online.tournament.service;
 
 import java.util.List;
 import java.util.UUID;
@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.online.tournament.DTO.match.MatchDto;
-import com.online.tournament.DTO.player.PlayerDto;
-import com.online.tournament.DTO.round.RoundDto;
-import com.online.tournament.DTO.tournament.TournamentDto;
+import com.online.tournament.DTO.MatchDto;
+import com.online.tournament.DTO.PlayerDto;
+import com.online.tournament.DTO.RoundDto;
+import com.online.tournament.DTO.TournamentDto;
 import com.online.tournament.model.Match;
 import com.online.tournament.model.Player;
 import com.online.tournament.model.Round;
@@ -17,9 +17,6 @@ import com.online.tournament.model.Tournament;
 import com.online.tournament.repository.MatchRepository;
 import com.online.tournament.service.exceptions.match.MatchNotFoundException;
 import com.online.tournament.service.exceptions.round.RoundNotFoundException;
-import com.online.tournament.service.player.PlayerService;
-import com.online.tournament.service.round.RoundService;
-import com.online.tournament.service.tournament.TournamentService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

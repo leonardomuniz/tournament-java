@@ -55,7 +55,8 @@ public class Tournament {
     private List<Player> players;
 
     @ManyToMany
-    @JoinTable(name = "tournamentMatch", joinColumns = @JoinColumn(name = "tournamentId"), inverseJoinColumns = @JoinColumn(name = "matchId"))
+    @JoinTable(name = "tournament_match", joinColumns = @JoinColumn(name = "tournament_id"), inverseJoinColumns = @JoinColumn(name = "match_id"))
+    @JsonManagedReference
     private List<Match> matches;
 
     public void updateFrom(Tournament input) {

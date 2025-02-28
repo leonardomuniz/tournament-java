@@ -1,4 +1,4 @@
-package com.online.tournament.service.tournament;
+package com.online.tournament.service;
 
 import java.util.List;
 import java.util.UUID;
@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.online.tournament.DTO.tournament.TournamentDto;
+import com.online.tournament.DTO.TournamentDto;
 import com.online.tournament.model.Player;
 import com.online.tournament.model.Round;
 import com.online.tournament.model.Tournament;
